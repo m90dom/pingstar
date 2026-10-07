@@ -1,0 +1,202 @@
+[
+  {
+    "id": "PROD-001",
+    "sku": "FR-AC-001",
+    "name": "Classic Acetate Frame",
+    "category": "Frames",
+    "sellPrice": 95.0,
+    "costPrice": 34.0,
+    "stock": 14,
+    "reorderLevel": 5
+  },
+  {
+    "id": "PROD-002",
+    "sku": "FR-TI-002",
+    "name": "Lightweight Titanium Frame",
+    "category": "Frames",
+    "sellPrice": 185.0,
+    "costPrice": 72.0,
+    "stock": 8,
+    "reorderLevel": 4
+  },
+  {
+    "id": "PROD-003",
+    "sku": "FR-DS-003",
+    "name": "Designer Square Frame",
+    "category": "Frames",
+    "sellPrice": 220.0,
+    "costPrice": 98.0,
+    "stock": 6,
+    "reorderLevel": 3
+  },
+  {
+    "id": "PROD-004",
+    "sku": "FR-KD-004",
+    "name": "Children's Flex Frame",
+    "category": "Frames",
+    "sellPrice": 65.0,
+    "costPrice": 22.0,
+    "stock": 11,
+    "reorderLevel": 5
+  },
+  {
+    "id": "PROD-005",
+    "sku": "FR-EC-005",
+    "name": "Eco Recycled Frame",
+    "category": "Frames",
+    "sellPrice": 130.0,
+    "costPrice": 48.0,
+    "stock": 9,
+    "reorderLevel": 4
+  },
+  {
+    "id": "PROD-006",
+    "sku": "FR-SP-006",
+    "name": "Sports Wrap Frame",
+    "category": "Frames",
+    "sellPrice": 110.0,
+    "costPrice": 42.0,
+    "stock": 5,
+    "reorderLevel": 3
+  },
+  {
+    "id": "PROD-007",
+    "sku": "RG-150-007",
+    "name": "Ready Readers +1.50",
+    "category": "Ready Readers",
+    "sellPrice": 25.0,
+    "costPrice": 7.0,
+    "stock": 18,
+    "reorderLevel": 6
+  },
+  {
+    "id": "PROD-008",
+    "sku": "LN-SV-008",
+    "name": "Single Vision Standard Lenses",
+    "category": "Lenses",
+    "sellPrice": 70.0,
+    "costPrice": 18.0,
+    "stock": 30,
+    "reorderLevel": 10
+  },
+  {
+    "id": "PROD-009",
+    "sku": "LN-AG-009",
+    "name": "Single Vision Anti-Glare Lenses",
+    "category": "Lenses",
+    "sellPrice": 110.0,
+    "costPrice": 32.0,
+    "stock": 22,
+    "reorderLevel": 8
+  },
+  {
+    "id": "PROD-010",
+    "sku": "LN-BL-010",
+    "name": "Blue Light Filter Lenses",
+    "category": "Lenses",
+    "sellPrice": 95.0,
+    "costPrice": 28.0,
+    "stock": 16,
+    "reorderLevel": 6
+  },
+  {
+    "id": "PROD-011",
+    "sku": "LN-VS-011",
+    "name": "Standard Varifocal Lenses",
+    "category": "Lenses",
+    "sellPrice": 180.0,
+    "costPrice": 64.0,
+    "stock": 13,
+    "reorderLevel": 5
+  },
+  {
+    "id": "PROD-012",
+    "sku": "LN-VP-012",
+    "name": "Premium Varifocal Lenses",
+    "category": "Lenses",
+    "sellPrice": 320.0,
+    "costPrice": 120.0,
+    "stock": 7,
+    "reorderLevel": 3
+  },
+  {
+    "id": "PROD-013",
+    "sku": "UP-PH-013",
+    "name": "Photochromic Lens Upgrade",
+    "category": "Lens Upgrades",
+    "sellPrice": 120.0,
+    "costPrice": 42.0,
+    "stock": 12,
+    "reorderLevel": 4
+  },
+  {
+    "id": "PROD-014",
+    "sku": "UP-TH-014",
+    "name": "Thin & Light 1.67 Upgrade",
+    "category": "Lens Upgrades",
+    "sellPrice": 140.0,
+    "costPrice": 50.0,
+    "stock": 10,
+    "reorderLevel": 4
+  },
+  {
+    "id": "PROD-015",
+    "sku": "CL-D30-015",
+    "name": "Daily Contact Lenses — 30 Pack",
+    "category": "Contact Lenses",
+    "sellPrice": 28.0,
+    "costPrice": 14.0,
+    "stock": 24,
+    "reorderLevel": 8
+  },
+  {
+    "id": "PROD-016",
+    "sku": "CL-M03-016",
+    "name": "Monthly Contact Lenses — 3 Pack",
+    "category": "Contact Lenses",
+    "sellPrice": 24.0,
+    "costPrice": 11.0,
+    "stock": 17,
+    "reorderLevel": 6
+  },
+  {
+    "id": "PROD-017",
+    "sku": "CL-SOL-017",
+    "name": "Contact Lens Solution 300ml",
+    "category": "Contact Lens Care",
+    "sellPrice": 12.0,
+    "costPrice": 4.5,
+    "stock": 21,
+    "reorderLevel": 7
+  },
+  {
+    "id": "PROD-018",
+    "sku": "AC-CS-018",
+    "name": "Premium Glasses Case",
+    "category": "Accessories",
+    "sellPrice": 15.0,
+    "costPrice": 4.0,
+    "stock": 20,
+    "reorderLevel": 7
+  },
+  {
+    "id": "PROD-019",
+    "sku": "AC-SP-019",
+    "name": "Lens Cleaning Spray",
+    "category": "Accessories",
+    "sellPrice": 8.0,
+    "costPrice": 2.0,
+    "stock": 27,
+    "reorderLevel": 8
+  },
+  {
+    "id": "PROD-020",
+    "sku": "AC-MC-020",
+    "name": "Microfibre Cleaning Cloth",
+    "category": "Accessories",
+    "sellPrice": 4.0,
+    "costPrice": 0.75,
+    "stock": 35,
+    "reorderLevel": 10
+  }
+]

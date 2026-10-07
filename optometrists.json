@@ -1,0 +1,68 @@
+[
+  {
+    "id": "OPT-01",
+    "name": "Dr Amelia Reed",
+    "initials": "AR",
+    "role": "Senior Optometrist",
+    "specialties": [
+      "Routine eye examination",
+      "Prescription review",
+      "Urgent eye concern",
+      "Glaucoma monitoring",
+      "Children's eye examination"
+    ],
+    "workingDays": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "start": "09:00",
+    "end": "17:00",
+    "room": "Consulting Room 1"
+  },
+  {
+    "id": "OPT-02",
+    "name": "Alex Morgan",
+    "initials": "AM",
+    "role": "Contact Lens Optometrist",
+    "specialties": [
+      "Routine eye examination",
+      "Contact lens check",
+      "Prescription review"
+    ],
+    "workingDays": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "start": "09:30",
+    "end": "17:30",
+    "room": "Consulting Room 2"
+  },
+  {
+    "id": "OPT-03",
+    "name": "Helen Brooks",
+    "initials": "HB",
+    "role": "Paediatric & Low Vision Optometrist",
+    "specialties": [
+      "Routine eye examination",
+      "Children's eye examination",
+      "Low vision review",
+      "Frame fitting"
+    ],
+    "workingDays": [
+      1,
+      2,
+      4,
+      5,
+      6
+    ],
+    "start": "09:00",
+    "end": "16:30",
+    "room": "Consulting Room 3"
+  }
+]

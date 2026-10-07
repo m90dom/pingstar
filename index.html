@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Pingstar AI - synthetic optician customer management demo" />
+  <title>Pingstar AI Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">PS</div>
+        <div><strong>Pingstar AI</strong><span>AI practice platform</span></div>
+      </div>
+      <nav class="nav" aria-label="Main navigation">
+        <button class="nav-item active" data-view="dashboard"><span>⌂</span> Dashboard</button>
+        <button class="nav-item" data-view="customers"><span>◉</span> Customers</button>
+        <button class="nav-item" data-view="appointments"><span>▣</span> Appointments</button>
+        <button class="nav-item" data-view="mailbox"><span>✉</span> Mailbox</button>
+        <button class="nav-item" data-view="missedcalls"><span>☎</span> Missed Calls</button>
+        <button class="nav-item" data-view="assistant"><span>✦</span> AI Chatbot</button>
+        <button class="nav-item" data-view="connections"><span>↔</span> Connections</button>
+        <button class="nav-item" data-view="settings"><span>⚙</span> Demo settings</button>
+      </nav>
+      <div class="sidebar-note">
+        <strong>Synthetic data only</strong>
+        <p>This demo contains 50 fictional customers and runs entirely on your device.</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Good morning</p>
+          <h1 id="page-title">Practice overview</h1>
+        </div>
+        <div class="topbar-actions">
+          <div class="global-search">
+            <span>⌕</span>
+            <input id="global-search" type="search" placeholder="Search customer name, phone or ID" />
+          </div>
+          <button class="primary-btn" id="new-appointment-btn">+ New appointment</button>
+        </div>
+      </header>
+
+      <section class="view active" id="view-dashboard">
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-icon">◉</div><div><span>Total customers</span><strong id="stat-total">50</strong><small>Fictional demo records</small></div></article>
+          <article class="stat-card"><div class="stat-icon">!</div><div><span>Overdue recalls</span><strong id="stat-overdue">0</strong><small>Needs follow-up</small></div></article>
+          <article class="stat-card"><div class="stat-icon">◷</div><div><span>Due in 30 days</span><strong id="stat-due">0</strong><small>Recall opportunity</small></div></article>
+          <article class="stat-card"><div class="stat-icon">▣</div><div><span>Upcoming bookings</span><strong id="stat-bookings">0</strong><small>Next 30 days</small></div></article>
+          <article class="stat-card"><div class="stat-icon">☎</div><div><span>Missed calls today</span><strong id="stat-missed-calls">0</strong><small id="stat-missed-recovered">0 bookings recovered</small></div></article>
+          <article class="stat-card retail-only"><div class="stat-icon">£</div><div><span>Retail revenue</span><strong id="stat-retail-revenue">£0</strong><small>Product sales recorded</small></div></article>
+          <article class="stat-card retail-only"><div class="stat-icon">↗</div><div><span>Retail gross profit</span><strong id="stat-retail-profit">£0</strong><small>Revenue less product cost</small></div></article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel panel-wide">
+            <div class="panel-header"><div><h2>Recall workload</h2><p>Customers who may need a check-up call</p></div><button class="text-btn" data-jump="customers" data-filter="recall">View all</button></div>
+            <div id="recall-list" class="recall-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-header"><div><h2>Today’s calls</h2><p>Latest customer contact</p></div></div>
+            <div id="today-calls" class="activity-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-header"><div><h2>Next appointments</h2><p>Upcoming schedule</p></div><button class="text-btn" data-jump="appointments">Open diary</button></div>
+            <div id="next-appointments" class="appointment-list"></div>
+          </article>
+          <article class="panel retail-only">
+            <div class="panel-header"><div><h2>Recent retail sales</h2><p>Extra income from frames, lenses and accessories</p></div><button class="text-btn" data-jump="products">Open sales</button></div>
+            <div id="dashboard-sales" class="sales-mini-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-header"><div><h2>Missed-call recovery</h2><p>Automatic SMS links to the booking chatbot</p></div><button class="text-btn" data-jump="missedcalls">Open recovery centre</button></div>
+            <div id="dashboard-missed-calls" class="missed-mini-list"></div>
+          </article>
+          <article class="panel assistant-preview">
+            <div class="assistant-orb">✦</div>
+            <h2>Ask your practice data</h2>
+            <p>Try: “Who is overdue for a check-up?” or “Show customers who called today.”</p>
+            <button class="primary-btn full" data-jump="assistant">Open AI Assistant</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-customers">
+        <div class="panel">
+          <div class="panel-header customers-toolbar">
+            <div><h2>Customer records</h2><p>50 synthetic profiles with contact, recall and optical information</p></div>
+            <div class="toolbar-actions">
+              <select id="customer-filter" aria-label="Filter customers">
+                <option value="all">All customers</option>
+                <option value="overdue">Overdue recall</option>
+                <option value="due30">Due within 30 days</option>
+                <option value="calledToday">Called today</option>
+                <option value="upcoming">Has appointment</option>
+              </select>
+              <button class="secondary-btn" id="export-customers">Export CSV</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Customer</th><th>Contact</th><th>Last eye exam</th><th>Next recall</th><th>Last contact</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="customers-body"></tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span id="customer-count"></span><div id="pagination" class="pagination"></div></div>
+        </div>
+      </section>
+
+
+      <section class="view" id="view-products">
+        <div class="stats-grid product-stats">
+          <article class="stat-card"><div class="stat-icon">£</div><div><span>Total retail revenue</span><strong id="product-stat-revenue">£0</strong><small>All recorded product sales</small></div></article>
+          <article class="stat-card"><div class="stat-icon">↗</div><div><span>Gross profit</span><strong id="product-stat-profit">£0</strong><small>Before overheads and tax</small></div></article>
+          <article class="stat-card"><div class="stat-icon">▤</div><div><span>Sales this month</span><strong id="product-stat-month">£0</strong><small>July 2026</small></div></article>
+          <article class="stat-card"><div class="stat-icon">!</div><div><span>Low stock items</span><strong id="product-stat-low-stock">0</strong><small>At or below reorder level</small></div></article>
+        </div>
+        <div class="products-layout">
+          <article class="panel products-panel">
+            <div class="panel-header customers-toolbar">
+              <div><h2>Product catalogue</h2><p>20 fictional retail products with selling price, cost, margin and current stock</p></div>
+              <div class="toolbar-actions">
+                <select id="product-category-filter" aria-label="Filter product category"><option value="all">All categories</option></select>
+                <input id="product-search" class="toolbar-search" type="search" placeholder="Search products or SKU" />
+                <button class="primary-btn" id="new-sale-btn">+ Record sale</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="products-table">
+                <thead><tr><th>Product</th><th>Category</th><th>Sell price</th><th>Cost</th><th>Gross margin</th><th>Stock</th><th>Action</th></tr></thead>
+                <tbody id="products-body"></tbody>
+              </table>
+            </div>
+          </article>
+          <aside class="panel sales-sidebar">
+            <div class="panel-header"><div><h2>Top products</h2><p>Ranked by retail revenue</p></div></div>
+            <div id="top-products" class="top-products"></div>
+            <div class="side-divider"></div>
+            <div class="panel-header"><div><h2>Recent sales</h2><p>Latest customer purchases</p></div><button class="text-btn" id="export-sales">Export CSV</button></div>
+            <div id="recent-sales" class="recent-sales"></div>
+          </aside>
+        </div>
+      </section>
+
+
+      <section class="view" id="view-mailbox">
+        <div class="mail-live-banner" id="mail-live-banner">
+          <div><span class="connection-dot" id="mail-live-dot"></span><strong id="mail-live-label">Demo mailbox</strong><small id="mail-live-detail">Connect Microsoft 365 or Gmail to handle real practice email.</small></div>
+          <div class="mail-live-actions"><button class="secondary-btn" id="mail-sync-btn" type="button">Sync mailbox</button><button class="primary-btn" data-jump="connections" type="button">Connect mailbox</button></div>
+        </div>
+        <div class="stats-grid mailbox-stats">
+          <article class="stat-card"><div class="stat-icon">✉</div><div><span>Unread messages</span><strong id="mail-stat-unread">0</strong><small>Customer emails needing review</small></div></article>
+          <article class="stat-card"><div class="stat-icon">▤</div><div><span>Inbox messages</span><strong id="mail-stat-inbox">0</strong><small>Dummy mailbox records</small></div></article>
+          <article class="stat-card"><div class="stat-icon">↩</div><div><span>Received today</span><strong id="mail-stat-today">0</strong><small>New customer correspondence</small></div></article>
+          <article class="stat-card"><div class="stat-icon">✎</div><div><span>Drafts</span><strong id="mail-stat-drafts">0</strong><small>Saved but not sent</small></div></article>
+        </div>
+        <div class="mailbox-layout">
+          <aside class="panel mailbox-sidebar">
+            <button class="primary-btn full" id="compose-email-btn">+ Compose email</button>
+            <div id="mail-folders" class="mail-folders">
+              <button class="mail-folder active" data-mail-folder="inbox"><span>Inbox</span><b id="folder-count-inbox">0</b></button>
+              <button class="mail-folder" data-mail-folder="sent"><span>Sent</span><b id="folder-count-sent">0</b></button>
+              <button class="mail-folder" data-mail-folder="drafts"><span>Drafts</span><b id="folder-count-drafts">0</b></button>
+              <button class="mail-folder" data-mail-folder="starred"><span>Starred</span><b id="folder-count-starred">0</b></button>
+            </div>
+            <div class="privacy-box" id="mailbox-mode-note"><strong>Demo mailbox</strong><p>Connect a mailbox from Connections to sync and send real email. Until then, messages remain local demo data.</p></div>
+          </aside>
+          <section class="panel mailbox-panel">
+            <div class="mailbox-toolbar">
+              <div><h2 id="mail-list-title">Inbox</h2><p id="mail-list-subtitle">Customer correspondence linked to contact records</p></div>
+              <div class="mail-toolbar-actions">
+                <input id="mail-search" type="search" placeholder="Search sender, subject or message" />
+                <button class="secondary-btn hidden" id="clear-mail-customer-filter">Clear customer filter</button>
+              </div>
+            </div>
+            <div class="mailbox-content">
+              <div id="mail-list" class="mail-list" aria-label="Email list"></div>
+              <div id="mail-reader" class="mail-reader"><div class="mail-empty-state"><span>✉</span><h3>Select an email</h3><p>Choose a message from the list to read it here.</p></div></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="view-appointments">
+        <div class="appointments-layout calendar-layout">
+          <article class="panel calendar-panel">
+            <div class="panel-header calendar-header">
+              <div><h2>Optometrist team calendar</h2><p>Booked appointments are colour coded by practitioner. Empty working slots can be selected to create a booking.</p></div>
+              <button class="primary-btn" id="new-appointment-btn-2">+ Book appointment</button>
+            </div>
+            <div class="calendar-toolbar">
+              <div class="week-controls">
+                <button class="secondary-btn icon-only" id="previous-week" aria-label="Previous week">‹</button>
+                <button class="secondary-btn" id="current-week">This week</button>
+                <button class="secondary-btn icon-only" id="next-week" aria-label="Next week">›</button>
+                <strong id="calendar-week-label"></strong>
+              </div>
+              <label class="calendar-filter">Show
+                <select id="calendar-provider-filter"><option value="all">All practitioners</option></select>
+              </label>
+            </div>
+            <div id="optometrist-team" class="optometrist-team"></div>
+            <div class="calendar-legend"><span><i class="legend-dot amelia"></i>Dr Amelia Reed</span><span><i class="legend-dot alex"></i>Alex Morgan</span><span><i class="legend-dot helen"></i>Helen Brooks</span><span><i class="legend-dot available"></i>Available slot</span></div>
+            <div class="calendar-scroll"><div id="calendar-grid" class="calendar-grid" aria-label="Weekly optometrist calendar"></div></div>
+          </article>
+          <aside class="panel compact-panel availability-panel">
+            <h2>Best next availability</h2>
+            <p>Select a slot to open the booking form with the practitioner, date and time completed.</p>
+            <div id="available-slots" class="slot-list"></div>
+            <div class="side-divider"></div>
+            <h2>Upcoming bookings</h2>
+            <div id="appointments-list" class="diary-list compact-diary"></div>
+          </aside>
+        </div>
+        <article class="panel appointment-history-panel">
+          <div class="panel-header history-header">
+            <div><h2>Appointment history</h2><p>Review completed, cancelled and missed visits across the practice.</p></div>
+            <div class="history-controls">
+              <input id="history-search" class="toolbar-search" placeholder="Search customer, type or notes…" />
+              <select id="history-status-filter"><option value="all">All statuses</option><option>Completed</option><option>Cancelled</option><option>No-show</option></select>
+              <select id="history-provider-filter"><option value="all">All practitioners</option></select>
+            </div>
+          </div>
+          <div id="appointment-history-summary" class="history-summary"></div>
+          <div id="appointment-history-list" class="appointment-history-list"></div>
+        </article>
+      </section>
+
+
+
+      <section class="view" id="view-missedcalls">
+        <div class="missed-call-hero">
+          <div>
+            <p class="eyebrow">Automated call recovery</p>
+            <h2>Turn unanswered calls into chatbot bookings.</h2>
+            <p>Keep the existing office number. If the practice does not answer, divert the unanswered call to Twilio. Pingstar captures the caller number and immediately texts a secure link to the self-service booking assistant.</p>
+          </div>
+          <div class="missed-call-flow" aria-label="Missed call workflow">
+            <span><b>1</b> Missed call</span><i>→</i><span><b>2</b> Webhook</span><i>→</i><span><b>3</b> SMS sent</span><i>→</i><span><b>4</b> AI booking</span>
+          </div>
+        </div>
+
+        <div class="stats-grid missed-call-stats">
+          <article class="stat-card"><div class="stat-icon">☎</div><div><span>Missed calls</span><strong id="missed-stat-total">0</strong><small>Current demo period</small></div></article>
+          <article class="stat-card"><div class="stat-icon">✉</div><div><span>SMS delivered</span><strong id="missed-stat-delivered">0</strong><small>Delivery status received</small></div></article>
+          <article class="stat-card"><div class="stat-icon">✦</div><div><span>Chatbot opened</span><strong id="missed-stat-opened">0</strong><small>Customer clicked the link</small></div></article>
+          <article class="stat-card"><div class="stat-icon">▣</div><div><span>Bookings recovered</span><strong id="missed-stat-booked">0</strong><small>Appointments completed in chat</small></div></article>
+        </div>
+
+        <div class="missed-call-layout">
+          <article class="panel missed-call-log-panel">
+            <div class="panel-header customers-toolbar">
+              <div><h2>Missed-call activity</h2><p>Track the call, SMS delivery, chatbot visit and booking result.</p></div>
+              <div class="toolbar-actions">
+                <select id="missed-call-filter" aria-label="Filter missed calls"><option value="all">All outcomes</option><option value="Booked">Booked</option><option value="Opened">Chatbot opened</option><option value="Delivered">SMS delivered</option><option value="Needs review">Needs review</option></select>
+                <button class="secondary-btn" id="refresh-missed-calls">Refresh</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="missed-call-table">
+                <thead><tr><th>Caller</th><th>Call missed</th><th>SMS</th><th>Chatbot</th><th>Outcome</th><th>Actions</th></tr></thead>
+                <tbody id="missed-calls-body"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <aside class="missed-call-side">
+            <article class="panel simulator-panel">
+              <div class="panel-header"><div><h2>Simulate a missed call</h2><p>Use a fictional number unless Twilio is configured.</p></div><span id="sms-connection-badge" class="badge blue">Checking…</span></div>
+              <form id="missed-call-form">
+                <label>Caller name<input id="missed-caller-name" value="Jamie Taylor" required /></label>
+                <label>Mobile number<input id="missed-caller-phone" value="07123 456789" required /></label>
+                <label>Reason<select id="missed-call-reason"><option>Book an eye test</option><option>Change an appointment</option><option>Contact lens enquiry</option><option>Glasses collection</option><option>General enquiry</option></select></label>
+                <label class="missed-real-toggle"><input id="missed-send-real" type="checkbox" /><span><strong>Send a real test SMS</strong><small>Only works when Twilio is configured. Carrier charges may apply.</small></span></label>
+                <button class="primary-btn full" type="submit">Simulate missed call and SMS</button>
+              </form>
+              <div id="missed-call-result" class="missed-call-result"></div>
+            </article>
+
+            <article class="panel sms-template-panel">
+              <div class="panel-header"><div><h2>SMS template</h2><p>The booking link opens the chatbot automatically.</p></div></div>
+              <div class="sms-phone-preview">
+                <span>ClearView Opticians</span>
+                <p>Sorry we missed your call. Book an appointment or ask our optical assistant a question here:</p>
+                <a id="sms-template-link" href="website.html?chat=open&amp;action=book&amp;source=missed-call" target="_blank">Open AI booking assistant</a>
+                <small>Reply STOP to opt out.</small>
+              </div>
+            </article>
+
+            <article class="panel integration-status-panel">
+              <div class="panel-header"><div><h2>Live connection</h2><p>Production webhook and messaging status.</p></div></div>
+              <div id="missed-call-connection-details" class="connection-checklist"></div>
+              <a class="secondary-btn full centred-link" href="MISSED_CALL_SMS_SETUP.md" target="_blank">Open connection steps</a>
+            </article>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="view-automations">
+        <div class="automation-hero">
+          <div><p class="eyebrow">Optician workflow automation</p><h2>Build workflows that act on practice data</h2><p>Connect appointments, recalls, customer messages, clinical approvals, retail opportunities and stock into auditable automated processes.</p></div>
+          <div class="automation-hero-actions"><button class="secondary-btn" id="ai-workflow-btn">✦ Describe a workflow</button><button class="primary-btn" id="new-workflow-btn">+ New automation</button></div>
+        </div>
+        <div class="stats-grid automation-stats">
+          <article class="stat-card"><div class="stat-icon">⚡</div><div><span>Active automations</span><strong id="auto-stat-active">0</strong><small>Live demo workflows</small></div></article>
+          <article class="stat-card"><div class="stat-icon">▶</div><div><span>Workflow runs</span><strong id="auto-stat-runs">0</strong><small>Across all automations</small></div></article>
+          <article class="stat-card"><div class="stat-icon">✓</div><div><span>Success rate</span><strong id="auto-stat-success">0%</strong><small>Completed without failure</small></div></article>
+          <article class="stat-card"><div class="stat-icon">£</div><div><span>Attributed revenue</span><strong id="auto-stat-revenue">£0</strong><small>Retail income linked to runs</small></div></article>
+          <article class="stat-card"><div class="stat-icon">◷</div><div><span>Staff time saved</span><strong id="auto-stat-time">0h</strong><small>Estimated manual effort</small></div></article>
+          <article class="stat-card"><div class="stat-icon">↻</div><div><span>Bookings recovered</span><strong id="auto-stat-recovered">0</strong><small>Recall and no-show journeys</small></div></article>
+        </div>
+        <div class="automation-shell">
+          <aside class="panel automation-tabs" aria-label="Automation sections">
+            <button class="automation-tab active" data-auto-tab="overview"><span>▦</span><div><strong>Overview</strong><small>Value and activity</small></div></button>
+            <button class="automation-tab" data-auto-tab="workflows"><span>⚡</span><div><strong>Workflows</strong><small>Build and manage</small></div></button>
+            <button class="automation-tab" data-auto-tab="templates"><span>▤</span><div><strong>Templates</strong><small>Optician recipes</small></div></button>
+            <button class="automation-tab" data-auto-tab="runs"><span>↻</span><div><strong>Run history</strong><small>Audit and retry</small></div></button>
+            <button class="automation-tab" data-auto-tab="tasks"><span>✓</span><div><strong>Tasks & approvals</strong><small>Human-in-the-loop</small></div></button>
+            <button class="automation-tab" data-auto-tab="integrations"><span>⌘</span><div><strong>Integrations</strong><small>Apps, APIs and forms</small></div></button>
+            <div class="automation-live-status"><i></i><div><strong>Trigger engine active</strong><small>Demo changes can start workflows</small></div></div>
+          </aside>
+          <div class="automation-main">
+            <section class="automation-pane active" data-auto-pane="overview">
+              <div class="automation-overview-grid">
+                <article class="panel automation-value-panel"><div class="panel-header"><div><h2>Automation value</h2><p>Estimated outcomes generated by the current workflow set</p></div><select id="automation-period"><option value="30">Last 30 days</option><option value="7">Last 7 days</option><option value="all">All demo data</option></select></div><div id="automation-value-bars" class="automation-value-bars"></div></article>
+                <article class="panel"><div class="panel-header"><div><h2>Recent activity</h2><p>Latest workflow executions</p></div><button class="text-btn" data-open-auto-tab="runs">View all</button></div><div id="automation-recent-runs" class="automation-recent-runs"></div></article>
+                <article class="panel"><div class="panel-header"><div><h2>Needs attention</h2><p>Approvals, failed runs and urgent tasks</p></div><button class="text-btn" data-open-auto-tab="tasks">Open queue</button></div><div id="automation-attention" class="automation-attention"></div></article>
+                <article class="panel automation-opportunities-panel"><div class="panel-header"><div><h2>Revenue opportunities</h2><p>Ethical sales follow-ups identified by workflow rules</p></div><button class="text-btn" data-open-auto-tab="workflows">Manage rules</button></div><div id="automation-opportunities" class="automation-opportunities"></div></article>
+              </div>
+            </section>
+            <section class="automation-pane" data-auto-pane="workflows"><article class="panel"><div class="panel-header customers-toolbar"><div><h2>Workflow library</h2><p>Each automation follows Trigger → Conditions → Actions, with delays, branches and approvals.</p></div><div class="toolbar-actions"><input id="workflow-search" class="toolbar-search" type="search" placeholder="Search workflows" /><select id="workflow-status-filter"><option value="all">All workflows</option><option value="active">Active</option><option value="inactive">Inactive</option></select><button class="primary-btn" id="new-workflow-btn-2">+ New automation</button></div></div><div id="workflow-list" class="workflow-list"></div></article></section>
+            <section class="automation-pane" data-auto-pane="templates"><article class="panel"><div class="panel-header"><div><h2>Optician automation templates</h2><p>Start with a workflow pattern and customise the timing, messages, conditions and owners.</p></div><input id="template-search" class="toolbar-search" type="search" placeholder="Search templates" /></div><div id="automation-template-grid" class="automation-template-grid"></div></article></section>
+            <section class="automation-pane" data-auto-pane="runs"><article class="panel"><div class="panel-header customers-toolbar"><div><h2>Workflow run history</h2><p>Inspect every step, customer, outcome and error. Failed runs can be retried.</p></div><div class="toolbar-actions"><input id="run-search" class="toolbar-search" type="search" placeholder="Search run or customer" /><select id="run-status-filter"><option value="all">All statuses</option><option>Succeeded</option><option>Waiting approval</option><option>Failed</option><option>Stopped</option></select></div></div><div class="table-wrap"><table class="run-table"><thead><tr><th>Run</th><th>Workflow</th><th>Customer</th><th>Started</th><th>Status</th><th>Value</th><th>Action</th></tr></thead><tbody id="automation-runs-body"></tbody></table></div></article></section>
+            <section class="automation-pane" data-auto-pane="tasks"><article class="panel"><div class="panel-header"><div><h2>Tasks and approvals</h2><p>Keep a person in control when a workflow needs judgement, clinical review or financial approval.</p></div><button class="primary-btn" id="new-task-btn">+ New task</button></div><div id="automation-task-summary" class="task-summary"></div><div id="automation-task-board" class="automation-task-board"></div></article></section>
+            <section class="automation-pane" data-auto-pane="integrations"><div class="integration-layout"><article class="panel integration-main-panel"><div class="panel-header"><div><h2>Integration centre</h2><p>Connect communication, calendar, accounting, laboratory and customer-facing services.</p></div><select id="integration-category"><option value="all">All categories</option></select></div><div id="integration-grid" class="integration-grid"></div></article><aside class="panel webhook-panel"><p class="eyebrow">Developer tools</p><h2>Webhook event tester</h2><p>Simulate an external system sending a trigger into Pingstar.</p><label>Incoming webhook URL<div class="copy-field"><input id="webhook-url" readonly value="https://demo.pingstar.local/hooks/practice-001" /><button type="button" id="copy-webhook-url">Copy</button></div></label><label>Event<select id="webhook-event"><option value="customer_created">New customer created</option><option value="missed_call">Practice call missed</option><option value="appointment_no_show">Appointment marked No-show</option><option value="prescription_issued">New prescription recorded</option><option value="stock_low">Product stock low</option><option value="email_received">Customer email received</option></select></label><label>Customer<select id="webhook-customer"></select></label><label>Sample payload<textarea id="webhook-payload" rows="9" readonly></textarea></label><button class="primary-btn full" id="fire-webhook">Send test event</button><div id="webhook-result" class="webhook-result"></div></aside></div></section>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-assistant">
+        <div class="assistant-layout">
+          <section class="chat-panel">
+            <div class="chat-header">
+              <div class="assistant-orb small">✦</div>
+              <div><h2>Pingstar AI Chatbot</h2><p>Your conversational practice copilot across customers, bookings, recalls and email</p></div>
+              <span id="ai-mode-status" class="status-pill online">Checking AI connection…</span>
+            </div>
+            <div id="chat-messages" class="chat-messages" aria-live="polite"></div>
+            <div class="suggestion-row" id="suggestions">
+              <button>Who is overdue for a check-up?</button>
+              <button>Show customers who called today</button>
+              <button>Who is due in the next 30 days?</button>
+              <button>Who is available tomorrow at 10:00?</button>
+              <button>Show Amelia Smith's appointment history</button>
+              <button>How many unread emails are there?</button>
+              <button>Give me today’s practice briefing</button>
+            </div>
+            <form id="chat-form" class="chat-input-row">
+              <input id="chat-input" autocomplete="off" placeholder="Ask about customers, recalls, email or appointments…" />
+              <button class="primary-btn" type="submit">Send</button>
+            </form>
+          </section>
+          <aside class="panel assistant-help">
+            <h2>Example questions</h2>
+            <div class="help-group"><strong>Find customers</strong><p>“Find Amelia Smith”<br>“Show customer CUST-1007”<br>“Search 071234…”</p></div>
+            <div class="help-group"><strong>Recall lists</strong><p>“Who is overdue?”<br>“Who needs a check-up this month?”<br>“Show contact lens customers”</p></div>
+            <div class="help-group"><strong>Bookings</strong><p>“Book Amelia Smith on 25 July at 10:30”<br>“Who is available tomorrow at 10:00?”</p></div>
+            <div class="help-group"><strong>Mailbox</strong><p>“How many unread emails are there?”<br>“Show Amelia Smith’s mailbox”</p></div>
+            <div class="help-group"><strong>Practice briefing</strong><p>“Give me today’s practice briefing”<br>“What needs attention today?”</p></div>
+            <div class="privacy-box"><strong>Important</strong><p id="ai-mode-description">Checking whether the secure live AI server is available. All bundled records are fictional.</p></div>
+          </aside>
+        </div>
+      </section>
+
+
+      <section class="view" id="view-connections">
+        <div class="connections-hero">
+          <div><p class="eyebrow">Live integrations</p><h2>Connect the practice phone and mailbox.</h2><p>Use Twilio to recover missed calls with an SMS booking link, and connect Microsoft 365 or Gmail so staff can handle customer email from Pingstar.</p></div>
+          <span class="connection-security">OAuth + server-side credentials</span>
+        </div>
+        <div class="connections-grid">
+          <article class="panel connection-card">
+            <div class="connection-card-head"><span class="connection-icon">☎</span><div><h2>Twilio missed-call recovery</h2><p>Existing local or mobile number → unanswered divert → Twilio → SMS → AI booking.</p></div><span id="twilio-connection-status" class="status-pill">Checking…</span></div>
+            <div class="connection-flow"><span>Office number</span><b>→</b><span>No answer / busy</span><b>→</b><span>Twilio</span><b>→</b><span>SMS booking link</span></div>
+            <ol class="integration-steps">
+              <li>Buy an SMS-capable Twilio number or configure a Messaging Service.</li>
+              <li>Ask the existing phone carrier to enable conditional call forwarding on no-answer/busy to the Twilio number.</li>
+              <li>Set the Twilio number Voice webhook to <code>/api/webhooks/twilio/incoming-call</code>.</li>
+              <li>Use <code>TWILIO_CALL_MODE=recovery-only</code> when the existing number rings first.</li>
+              <li>Test from an external phone and confirm the SMS opens the customer chatbot.</li>
+            </ol>
+            <div class="connection-actions"><a class="secondary-btn link-btn" href="TWILIO_SETUP.md" target="_blank">Open Twilio setup</a><button class="primary-btn" data-jump="missedcalls">Open missed-call centre</button></div>
+          </article>
+          <article class="panel connection-card">
+            <div class="connection-card-head"><span class="connection-icon">✉</span><div><h2>Practice mailbox</h2><p>Connect one client mailbox securely using OAuth. No mailbox password is stored in the browser.</p></div><span id="mail-connection-status" class="status-pill">Checking…</span></div>
+            <div id="mail-connection-account" class="connected-account">No live mailbox connected.</div>
+            <div class="provider-buttons"><a id="connect-microsoft-mail" class="provider-button microsoft" href="/api/mail/microsoft/connect"><strong>Microsoft 365</strong><span>Outlook / Exchange Online</span></a><a id="connect-google-mail" class="provider-button google" href="/api/mail/google/connect"><strong>Google Workspace</strong><span>Gmail</span></a></div>
+            <div class="connection-actions"><button class="primary-btn" id="connection-sync-mail" type="button">Sync messages</button><button class="secondary-btn" id="disconnect-mail" type="button">Disconnect</button><a class="text-btn link-btn" href="MAILBOX_INTEGRATION_SETUP.md" target="_blank">Setup steps</a></div>
+          </article>
+          <article class="panel connection-card full-connection-card">
+            <div class="connection-card-head"><span class="connection-icon">✦</span><div><h2>Customer website chatbot</h2><p>Missed-call SMS links open the public chatbot directly in the booking flow. The public assistant is separated from staff-only customer and clinical data.</p></div></div>
+            <div class="connection-flow"><span>SMS link</span><b>→</b><span>Website chatbot</span><b>→</b><span>Availability</span><b>→</b><span>Appointment confirmed</span></div>
+            <div class="connection-actions"><a class="primary-btn link-btn" href="website.html?chat=open&amp;action=book" target="_blank">Open customer website</a></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-settings">
+        <div class="settings-grid">
+          <article class="panel"><h2>Demo data</h2><p>Bookings, customer edits, compressed customer photos and the demo mailbox are stored in this browser. Resetting restores the original 50 fictional customers, practitioner schedules and email test data.</p><div class="settings-actions"><button class="secondary-btn" id="download-json">Download JSON data</button><button class="danger-btn" id="reset-demo">Reset demo</button></div></article>
+          <article class="panel"><h2>Production checklist</h2><ul class="checklist"><li>User authentication and role-based access</li><li>Encryption in transit and at rest</li><li>Consent, retention and deletion controls</li><li>Audit logging for every record access</li><li>Clinical-system and calendar integrations</li><li>Human approval before sensitive actions</li></ul></article>
+          <article class="panel"><h2>About the AI chatbot</h2><p>The chatbot first tries the secure <code>/api/chat</code> server endpoint. When no API key or server is available, it automatically falls back to the original local rule-based demo. The API key is never stored in the browser.</p></article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <button id="ai-chat-launcher" class="ai-chat-launcher" type="button" aria-label="Open Pingstar AI chatbot" aria-expanded="false">
+    <span class="ai-launcher-orb">✦</span><span class="ai-launcher-label">Ask AI</span><span id="ai-chat-unread" class="ai-chat-unread" hidden>1</span>
+  </button>
+
+  <section id="ai-floating-chat" class="ai-floating-chat" aria-label="Pingstar AI chatbot" aria-hidden="true">
+    <header class="ai-floating-header">
+      <div class="assistant-orb small">✦</div>
+      <div><strong>Pingstar AI</strong><span>Practice copilot · Local demo</span></div>
+      <div class="ai-floating-controls">
+        <button id="ai-chat-clear" type="button" title="Clear chat" aria-label="Clear chat">↻</button>
+        <button id="ai-chat-expand" type="button" title="Open full chatbot" aria-label="Open full chatbot">↗</button>
+        <button id="ai-chat-close" type="button" title="Close chatbot" aria-label="Close chatbot">×</button>
+      </div>
+    </header>
+    <div id="floating-chat-messages" class="ai-floating-messages" aria-live="polite"></div>
+    <div id="floating-chat-suggestions" class="ai-floating-suggestions">
+      <button type="button">Give me today’s practice briefing</button>
+      <button type="button">Who is overdue for a check-up?</button>
+      <button type="button">How many unread emails are there?</button>
+      <button type="button">Who is available tomorrow at 10:00?</button>
+    </div>
+    <form id="floating-chat-form" class="ai-floating-form">
+      <textarea id="floating-chat-input" rows="1" maxlength="500" placeholder="Ask about the practice…" aria-label="Ask the Pingstar AI chatbot"></textarea>
+      <button class="primary-btn" type="submit" aria-label="Send message">➤</button>
+    </form>
+    <div class="ai-floating-disclaimer">Fictional data · No real messages or clinical decisions</div>
+  </section>
+
+  <dialog id="customer-dialog" class="modal">
+    <div class="modal-header"><div><p class="eyebrow">Customer record</p><h2 id="customer-dialog-title"></h2></div><button class="icon-btn" data-close="customer-dialog">×</button></div>
+    <div id="customer-dialog-body"></div>
+  </dialog>
+
+  <dialog id="edit-customer-dialog" class="modal small-modal">
+    <form id="edit-customer-form">
+      <div class="modal-header"><div><p class="eyebrow">Edit record</p><h2>Edit customer record</h2></div><button type="button" class="icon-btn" data-close="edit-customer-dialog">×</button></div>
+      <input id="edit-customer-id" type="hidden" />
+      <div class="form-grid">
+        <label>First name<input id="edit-first-name" required /></label>
+        <label>Last name<input id="edit-last-name" required /></label>
+      </div>
+      <label>Phone number<input id="edit-phone" type="tel" required /></label>
+      <label>Email address<input id="edit-email" type="email" required /></label>
+      <label>Address<textarea id="edit-address" rows="3" required></textarea></label>
+      <div class="form-grid">
+        <label>Preferred contact<select id="edit-preferred-contact"><option>Phone</option><option>Email</option><option>WhatsApp</option><option>SMS</option></select></label>
+        <label>Status<select id="edit-status"><option>Active</option><option>Inactive</option></select></label>
+      </div>
+      <label>Clinical conditions and flags<input id="edit-clinical-flags" placeholder="e.g. Glaucoma family history, contact lens wearer" /></label>
+      <label>Clinical and customer notes<textarea id="edit-notes" rows="5" placeholder="Record condition notes, adaptations, preferences or follow-up information"></textarea></label>
+      <label class="checkbox-row"><input id="edit-consent" type="checkbox" /> Customer has consented to email and messaging contact</label>
+      <div class="modal-actions"><button type="button" class="secondary-btn" data-close="edit-customer-dialog">Cancel</button><button type="submit" class="primary-btn">Save changes</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="sale-dialog" class="modal small-modal">
+    <form id="sale-form">
+      <div class="modal-header"><div><p class="eyebrow">Retail income</p><h2>Record product sale</h2></div><button type="button" class="icon-btn" data-close="sale-dialog">×</button></div>
+      <label>Customer<select id="sale-customer" required></select></label>
+      <label>Product<select id="sale-product" required></select></label>
+      <div class="form-grid"><label>Quantity<input id="sale-quantity" type="number" min="1" value="1" required /></label><label>Sale date<input id="sale-date" type="date" required /></label></div>
+      <label>Payment method<select id="sale-payment"><option>Card</option><option>Cash</option><option>Payment link</option><option>Finance</option></select></label>
+      <label>Sale notes<textarea id="sale-notes" rows="3" placeholder="Optional discount, order or collection notes"></textarea></label>
+      <div id="sale-summary" class="sale-summary" aria-live="polite"></div>
+      <div class="modal-actions"><button type="button" class="secondary-btn" data-close="sale-dialog">Cancel</button><button type="submit" class="primary-btn" id="confirm-sale">Record sale</button></div>
+    </form>
+  </dialog>
+
+
+  <dialog id="email-compose-dialog" class="modal small-modal">
+    <form id="email-compose-form">
+      <div class="modal-header"><div><p class="eyebrow">Demo mailbox</p><h2 id="email-compose-title">Compose email</h2></div><button type="button" class="icon-btn" data-close="email-compose-dialog">×</button></div>
+      <input id="compose-reply-to" type="hidden" />
+      <input id="compose-message-id" type="hidden" />
+      <label>Linked customer<select id="compose-customer"><option value="">No linked customer</option></select></label>
+      <label>To<input id="compose-to" type="email" required /></label>
+      <label>Subject<input id="compose-subject" required /></label>
+      <label>Message<textarea id="compose-body" rows="8" required placeholder="Write a demo email…"></textarea></label>
+      <p class="compose-notice">This is a fictional mailbox. “Send” saves the message to the demo Sent folder only.</p>
+      <div class="modal-actions"><button type="button" class="secondary-btn" id="save-email-draft">Save draft</button><button type="button" class="secondary-btn" data-close="email-compose-dialog">Cancel</button><button type="submit" class="primary-btn">Send demo email</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="appointment-history-dialog" class="modal small-modal">
+    <form id="appointment-history-form">
+      <div class="modal-header"><div><p class="eyebrow">Past visit</p><h2>Edit appointment history</h2></div><button type="button" class="icon-btn" data-close="appointment-history-dialog">×</button></div>
+      <input id="history-appointment-id" type="hidden" />
+      <div id="history-appointment-context" class="history-edit-context"></div>
+      <label>Visit status<select id="history-edit-status"><option>Completed</option><option>Cancelled</option><option>No-show</option></select></label>
+      <label>Outcome<input id="history-edit-outcome" placeholder="e.g. Prescription updated" /></label>
+      <label>Clinical visit notes<textarea id="history-edit-notes" rows="6" placeholder="Record findings, advice and follow-up information"></textarea></label>
+      <label>Next recall date<input id="history-edit-recall" type="date" /></label>
+      <div class="modal-actions"><button type="button" class="secondary-btn" data-close="appointment-history-dialog">Cancel</button><button type="submit" class="primary-btn">Save history</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="appointment-dialog" class="modal small-modal">
+    <form id="appointment-form" method="dialog">
+      <div class="modal-header"><div><p class="eyebrow">New booking</p><h2>Book appointment</h2></div><button type="button" class="icon-btn" data-close="appointment-dialog">×</button></div>
+      <label>Customer<select id="appointment-customer" required></select></label>
+      <label>Appointment type<select id="appointment-type"><option>Routine eye examination</option><option>Contact lens check</option><option>Prescription review</option><option>Frame fitting</option><option>Urgent eye concern</option><option>Children's eye examination</option><option>Glaucoma monitoring</option><option>Low vision review</option></select></label>
+      <div class="form-grid"><label>Date<input id="appointment-date" type="date" required /></label><label>Time<input id="appointment-time" type="time" step="1800" required /></label></div>
+      <label>Appropriate practitioner<select id="appointment-optometrist" required></select></label>
+      <div id="provider-recommendation" class="provider-recommendation" aria-live="polite"></div>
+      <div class="modal-actions"><button type="button" class="secondary-btn" data-close="appointment-dialog">Cancel</button><button type="submit" class="primary-btn" id="confirm-booking">Confirm booking</button></div>
+    </form>
+  </dialog>
+
+
+  <dialog id="workflow-dialog" class="modal workflow-modal"><form id="workflow-form"><div class="modal-header"><div><p class="eyebrow">Workflow builder</p><h2 id="workflow-dialog-title">Create automation</h2></div><button type="button" class="icon-btn" data-auto-close="workflow-dialog">×</button></div><input id="workflow-id" type="hidden" /><div class="workflow-builder-layout"><div class="workflow-builder-form"><div class="form-grid"><label>Workflow name<input id="workflow-name" required placeholder="e.g. Recall recovery" /></label><label>Category<select id="workflow-category"><option>Appointments</option><option>Recalls</option><option>Retail</option><option>Stock</option><option>Communications</option><option>Onboarding</option><option>Marketing</option><option>Aftercare</option></select></label></div><label>Description<textarea id="workflow-description" rows="3" placeholder="Explain the business outcome"></textarea></label><div class="builder-section"><div class="builder-section-heading"><span class="builder-number">1</span><div><strong>Trigger</strong><small>The event that starts this workflow</small></div></div><label>Trigger event<select id="workflow-trigger"><option value="recall_due">Recall due within 30 days</option><option value="appointment_upcoming">Appointment starts in 24 hours</option><option value="appointment_booked">Appointment booked</option><option value="appointment_cancelled">Appointment cancelled</option><option value="appointment_no_show">Appointment marked No-show</option><option value="prescription_issued">New prescription recorded</option><option value="contact_lens_due">Contact lens reorder due</option><option value="product_sold">Product sold</option><option value="product_collected">Glasses order collected</option><option value="stock_low">Product stock low</option><option value="email_received">Customer email received</option><option value="customer_created">New customer created</option><option value="birthday_upcoming">Customer birthday approaching</option><option value="form_submitted">Customer form submitted</option><option value="missed_call">Practice call missed</option><option value="webhook_received">Webhook received</option></select></label></div><div class="builder-section"><div class="builder-section-heading"><span class="builder-number">2</span><div><strong>Conditions</strong><small>Optional rules that stop unsuitable records</small></div><button type="button" class="text-btn" id="add-condition">+ Add condition</button></div><div id="workflow-conditions" class="workflow-conditions"></div></div><div class="builder-section"><div class="builder-section-heading"><span class="builder-number">3</span><div><strong>Workflow steps</strong><small>Actions, delays, branches and approvals</small></div></div><div id="workflow-steps" class="workflow-step-editor"></div><div class="step-add-buttons"><button type="button" data-add-step="action">+ Action</button><button type="button" data-add-step="delay">+ Delay</button><button type="button" data-add-step="branch">+ Branch</button><button type="button" data-add-step="approval">+ Approval</button></div></div><label class="toggle-row"><input id="workflow-active" type="checkbox" checked /><span><strong>Activate after saving</strong><small>Active workflows can respond to demo events.</small></span></label></div><aside class="workflow-preview-panel"><div class="record-heading-row"><div><p class="eyebrow">Live preview</p><h3>Workflow path</h3></div><span class="status-pill online">Draft</span></div><div id="workflow-canvas" class="workflow-canvas"></div><div class="privacy-box"><strong>Safe activation</strong><p>Messages and integrations remain simulated. Approval steps prevent sensitive actions from continuing automatically.</p></div></aside></div><div class="modal-actions"><button type="button" class="secondary-btn" data-auto-close="workflow-dialog">Cancel</button><button type="button" class="secondary-btn" id="test-workflow-draft">Test draft</button><button type="submit" class="primary-btn">Save workflow</button></div></form></dialog>
+  <dialog id="ai-workflow-dialog" class="modal small-modal"><form id="ai-workflow-form"><div class="modal-header"><div><p class="eyebrow">AI workflow creator</p><h2>Describe what should happen</h2></div><button type="button" class="icon-btn" data-auto-close="ai-workflow-dialog">×</button></div><p class="dialog-copy">Use plain English. The demo converts your instruction into an editable workflow draft and never activates it automatically.</p><label>Workflow request<textarea id="ai-workflow-prompt" rows="7" required placeholder="When someone misses an appointment, WhatsApp them. If they have not rebooked after two days, create a call task for reception."></textarea></label><div class="ai-example-prompts"><button type="button">When a recall is due, email the customer and create a call task after 7 days if they have not booked.</button><button type="button">When stock is low, ask the manager to approve a purchase request and notify the dispensing team.</button><button type="button">When a new prescription is issued, create a retail opportunity but require optometrist approval before emailing.</button></div><div class="modal-actions"><button type="button" class="secondary-btn" data-auto-close="ai-workflow-dialog">Cancel</button><button type="submit" class="primary-btn">Create editable draft</button></div></form></dialog>
+  <dialog id="run-details-dialog" class="modal small-modal"><div class="modal-header"><div><p class="eyebrow">Execution audit</p><h2 id="run-details-title">Workflow run</h2></div><button type="button" class="icon-btn" data-auto-close="run-details-dialog">×</button></div><div id="run-details-body"></div><div class="modal-actions"><button type="button" class="secondary-btn" data-auto-close="run-details-dialog">Close</button><button type="button" class="primary-btn" id="retry-run-btn">Retry run</button></div></dialog>
+  <dialog id="task-dialog" class="modal small-modal"><form id="task-form"><div class="modal-header"><div><p class="eyebrow">Human task</p><h2>Create staff task</h2></div><button type="button" class="icon-btn" data-auto-close="task-dialog">×</button></div><input id="task-id" type="hidden" /><label>Task title<input id="task-title" required placeholder="e.g. Call customer to rebook" /></label><div class="form-grid"><label>Customer<select id="task-customer"></select></label><label>Owner<select id="task-owner"><option>Reception</option><option>Dispensing</option><option>Practice Manager</option><option>Dr Amelia Reed</option><option>Alex Morgan</option><option>Helen Brooks</option></select></label></div><div class="form-grid"><label>Due date<input id="task-due" type="date" required /></label><label>Priority<select id="task-priority"><option>Low</option><option selected>Medium</option><option>High</option><option>Urgent</option></select></label></div><label>Task type<select id="task-type"><option value="general">General task</option><option value="booking">Booking follow-up</option><option value="clinical">Clinical review</option><option value="retail">Retail opportunity</option><option value="approval">Approval required</option></select></label><label>Notes<textarea id="task-notes" rows="4" placeholder="Add instructions for the task owner"></textarea></label><div class="modal-actions"><button type="button" class="secondary-btn" data-auto-close="task-dialog">Cancel</button><button type="submit" class="primary-btn">Save task</button></div></form></dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="data.js"></script>
+  <script src="products-data.js"></script>
+  <script src="mail-data.js"></script>
+  <script src="automation-data.js"></script>
+  <script src="app.js"></script>
+  <script src="automation.js"></script>
+  <script src="missed-calls.js"></script>
+  <script src="connections.js"></script>
+</body>
+</html>
